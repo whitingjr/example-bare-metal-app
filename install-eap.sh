@@ -36,7 +36,7 @@ Prerequisites:
   - Java, Maven & Git
 
 USAGE:
-    $(basename "${BASH_SOURCE[0]}")
+    $(basename "${BASH_SOURCE[0]}") [FLAGS]
 
 FLAGS:
     -f, --flag          Some flag

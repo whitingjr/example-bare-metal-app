@@ -1,4 +1,4 @@
-embed-server --admin-only=true
+embed-server --server-config=standalone-microprofile.xml --admin-only=true
 batch
 /extension=org.wildfly.extension.microprofile.reactive-messaging-smallrye:add
 /extension=org.wildfly.extension.microprofile.reactive-streams-operators-smallrye:add
@@ -6,8 +6,7 @@ batch
 /subsystem=microprofile-reactive-messaging-smallrye:add
 module add --name=org.postgres --resources=postgresql-42.2.5.jar --dependencies=javax.api,javax.transaction.api
 /subsystem=datasources/jdbc-driver=postgres:add(driver-name="postgres",driver-module-name="org.postgres",driver-class-name=org.postgresql.Driver)
-data-source add --jndi-name=java:/FRDemoDS --name=FRDemoDS --connection-url=jdbc:postgresql://db/frdemo --driver-name=postgres --user-name=frdemo --password=frdemo
-/subsystem=undertow/server=default-server/host=default-host/location=\/:remove
+data-source add --jndi-name=java:/FRDemoDS --name=FRDemoDS --connection-url=jdbc:postgresql://localhost/frdemo --driver-name=postgres --user-name=frdemo --password=frdemo
 deploy -f first-responder-demo/backend/target/frdemo-backend.war
 /subsystem=undertow/server=default-server/host=default-host:write-attribute(name=default-web-module, value=frdemo-backend.war)
 run-batch

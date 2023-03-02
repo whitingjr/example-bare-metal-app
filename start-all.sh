@@ -7,8 +7,6 @@
 #   - Zookeeper
 #   - Kafka
 #   - JBoss EAP
-#   - Console
-#   - Simulator
 #
 # --------------------------------------------------
 
@@ -30,21 +28,23 @@ Script to start all services (in this order):
   - Zookeeper
   - Kafka
   - JBoss EAP
-  - Console
-  - Simulator
 
 Prerequisites:
   - JBoss EAP 7.4.3 with XP4 and deployed first responder demo
-  - Podman or Docker
+  - MAPBOX_TOKEN environment variable
+  - Docker Compose
 
 USAGE:
-    $(basename "${BASH_SOURCE[0]}")
+    $(basename "${BASH_SOURCE[0]}") [FLAGS] <mapbox-token>
 
 FLAGS:
     -f, --flag          Some flag
     -h, --help          Prints help information
     -v, --version       Prints version information
     --no-color          Uses plain text output
+
+ARGS:
+    <mapbox-token>      MapBox API token
 EOF
   exit
 }
@@ -90,10 +90,30 @@ parse_params() {
     esac
     shift
   done
+
+  args=("$@")
+  [[ ${#args[@]} -eq 0 ]] && die "Missing argument. Please specify a MapBox API token"
+  MAPBOX_TOKEN=${args[0]}
+
   return 0
 }
 
 parse_params "$@"
 setup_colors
 
-die "Not yet implemented!"
+EAP_74_DIR=jboss-eap-7.4
+
+[[ -x "$(command -v docker-compose)" ]] || die "Docker compose is not available"
+
+msg "\nStart ${CYAN}PostgreSQL, Zookeeper and Kafka${NOFORMAT}"
+docker-compose up --detach
+msg "${GREEN}DONE${NOFORMAT}"
+
+msg "\nStart ${CYAN}JBoss EAP${NOFORMAT} after waiting 10 seconds"
+${EAP_74_DIR}/bin/add-user.sh -u admin -p admin --silent
+sleep 10
+${EAP_74_DIR}/bin/standalone.sh \
+  -DKAFKA_SERVER=localhost:9092 \
+  -DMAPBOX_TOKEN="${MAPBOX_TOKEN}" \
+  -c standalone-microprofile.xml
+msg "${GREEN}DONE${NOFORMAT}"
