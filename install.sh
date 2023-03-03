@@ -2,7 +2,7 @@
 
 # --------------------------------------------------
 #
-# Script to install, patch and configure JBoss EAP.
+# Script to install all services.
 #
 # Prerequisites:
 #   - JBoss EAP 7.4 zip
@@ -26,7 +26,7 @@ cd "${script_dir}"
 
 usage() {
   cat <<EOF
-Script to install, patch and configure JBoss EAP.
+Script to install all services.
 
 Prerequisites:
   - JBoss EAP 7.4 zip
@@ -106,13 +106,19 @@ EAP_743_URL=https://access.redhat.com/articles/6289951
 EAP_XP4_MANAGER=jboss-eap-xp-4.0.0-manager.jar
 EAP_XP4_PATCH=jboss-eap-xp-4.0.0-patch.zip
 
+KAFKA_VERSION=2.13-3.4.0
+KAFKA_DIR=kafka_${KAFKA_VERSION}
+KAFKA_TAR=kafka_${KAFKA_VERSION}.tgz
+KAFKA_URL=https://dlcdn.apache.org/kafka/3.4.0/${KAFKA_TAR}
+
 POSTGRESQL_VERSION=42.2.5
 POSTGRESQL_JAR=postgresql-${POSTGRESQL_VERSION}.jar
 POSTGRESQL_URL=https://repo1.maven.org/maven2/org/postgresql/postgresql/${POSTGRESQL_VERSION}/${POSTGRESQL_JAR}
 
 FRDEMO_NAME=first-responder-demo
 FRDEMO_URL=https://github.com/wildfly-extras/${FRDEMO_NAME}
-FRDEMO_BACKEND_WAR=frdemo-backend.war
+FRDEMO_BACKEND_WAR=${FRDEMO_NAME}/backend/target/frdemo-backend.war
+FRDEMO_SIMULATOR_JAR=${FRDEMO_NAME}/simulator/target/quarkus-app/quarkus-run.jar
 
 [[ -f ${EAP_74_ZIP} ]] || die "No JBoss EAP 7.4 zip file found: '${EAP_74_ZIP}'.\nPlease get it from ${EAP_DOWNLOAD_URL}"
 [[ -f ${EAP_743_PATCH} ]] || die "No JBoss EAP 7.4.3 patch found: '${EAP_743_PATCH}'.\nPlease get it from ${EAP_743_URL}"
@@ -121,6 +127,22 @@ FRDEMO_BACKEND_WAR=frdemo-backend.war
 [[ -x "$(command -v java)" ]] || die "Java is not available"
 [[ -x "$(command -v mvn)" ]] || die "Maven is not available"
 [[ -x "$(command -v git)" ]] || die "Git is not available"
+
+msg "\n${CYAN}Download${NOFORMAT} Kafka ${KAFKA_VERSION}"
+if [[ -f ${KAFKA_TAR} ]]; then
+  msg "${YELLOW}Skipped${NOFORMAT}"
+else
+  wget ${KAFKA_URL}
+  msg "${GREEN}DONE${NOFORMAT}"
+fi
+
+msg "\n${CYAN}Unzip${NOFORMAT} Kafka ${KAFKA_VERSION}"
+if [[ -d ${KAFKA_DIR} ]]; then
+  msg "${YELLOW}Skipped${NOFORMAT}"
+else
+  tar xf ${KAFKA_TAR}
+  msg "${GREEN}DONE${NOFORMAT}"
+fi
 
 msg "\n${CYAN}Unzip${NOFORMAT} JBoss EAP 7.4"
 if [[ -d ${EAP_74_DIR} ]]; then
@@ -158,12 +180,22 @@ else
   msg "${GREEN}DONE${NOFORMAT}"
 fi
 
-msg "\n${CYAN}Build${NOFORMAT} First Responder Demo"
-if [[ -f ${FRDEMO_NAME}/backend/target/${FRDEMO_BACKEND_WAR} ]]; then
+msg "\n${CYAN}Build${NOFORMAT} Backend"
+if [[ -f ${FRDEMO_BACKEND_WAR} ]]; then
   msg "${YELLOW}Skipped${NOFORMAT}"
 else
   cd ${FRDEMO_NAME}
-  mvn package -DskipTests -DfailOnMissingWebXml=false -pl backend
+  mvn clean package -DskipTests -DfailOnMissingWebXml=false -pl backend
+  msg "${GREEN}DONE${NOFORMAT}"
+  cd ..
+fi
+
+msg "\n${CYAN}Build${NOFORMAT} Simulator"
+if [[ -f ${FRDEMO_SIMULATOR_JAR} ]]; then
+  msg "${YELLOW}Skipped${NOFORMAT}"
+else
+  cd ${FRDEMO_NAME}
+  mvn clean package -DskipTests -Dquarkus.container-image.build=false -Dquarkus.container-image.push=false -pl simulator
   msg "${GREEN}DONE${NOFORMAT}"
   cd ..
 fi

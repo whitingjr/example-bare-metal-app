@@ -2,11 +2,7 @@
 
 # --------------------------------------------------
 #
-# Script to start all services (in this order):
-#   - PostgreSQL
-#   - Zookeeper
-#   - Kafka
-#   - JBoss EAP
+# Script to start the simulator
 #
 # --------------------------------------------------
 
@@ -23,16 +19,7 @@ cd "${script_dir}"
 
 usage() {
   cat <<EOF
-Script to start all services (in this order):
-  - PostgreSQL
-  - Zookeeper
-  - Kafka
-  - JBoss EAP
-
-Prerequisites:
-  - JBoss EAP 7.4.3 with XP4 and deployed first responder demo
-  - MAPBOX_TOKEN environment variable
-  - Docker Compose
+Script to start the simulator.
 
 USAGE:
     $(basename "${BASH_SOURCE[0]}") [FLAGS] <mapbox-token>
@@ -42,9 +29,6 @@ FLAGS:
     -h, --help          Prints help information
     -v, --version       Prints version information
     --no-color          Uses plain text output
-
-ARGS:
-    <mapbox-token>      MapBox API token
 EOF
   exit
 }
@@ -90,30 +74,13 @@ parse_params() {
     esac
     shift
   done
-
-  args=("$@")
-  [[ ${#args[@]} -eq 0 ]] && die "Missing argument. Please specify a MapBox API token"
-  MAPBOX_TOKEN=${args[0]}
-
   return 0
 }
 
 parse_params "$@"
 setup_colors
 
-EAP_74_DIR=jboss-eap-7.4
+FRDEMO_NAME=first-responder-demo
+FRDEMO_SIMULATOR_JAR=${FRDEMO_NAME}/simulator/target/quarkus-app/quarkus-run.jar
 
-[[ -x "$(command -v docker-compose)" ]] || die "Docker compose is not available"
-
-msg "\nStart ${CYAN}PostgreSQL, Zookeeper and Kafka${NOFORMAT}"
-docker-compose up --detach
-msg "${GREEN}DONE${NOFORMAT}"
-
-msg "\nStart ${CYAN}JBoss EAP${NOFORMAT} after waiting 10 seconds"
-${EAP_74_DIR}/bin/add-user.sh -u admin -p admin --silent
-sleep 10
-${EAP_74_DIR}/bin/standalone.sh \
-  -DKAFKA_SERVER=localhost:9092 \
-  -DMAPBOX_TOKEN="${MAPBOX_TOKEN}" \
-  -c standalone-microprofile.xml
-msg "${GREEN}DONE${NOFORMAT}"
+java -DBACKEND_URL=http://localhost:8080 -DSIM_SEND=true -jar ${FRDEMO_SIMULATOR_JAR}

@@ -2,16 +2,14 @@
 
 Scripts to install, configure and run the first responder demo on bare metal. 
 
-## Setup
+## Install
 
-To get everything up and running use
+The `install.sh` script 
 
-```shell
-./install-eap.sh
-./start-all.sh
-```
-
-The installation script installs, patches and configures JBoss EAP. The result is a JBoss EAP 7.4.3 standalone server with XP4 and the deployed first responder demo.
+- installs Apache Kafka
+- downloads the PostgreSQL JDBC driver
+- builds the first responder demo (backend and simulator)
+- installs, patches and configures JBoss EAP
 
 In order to run the script, you'll need
 
@@ -21,15 +19,15 @@ In order to run the script, you'll need
 - JBoss EAP XP4 patch
 - Java, Maven & Git
 
-The start script starts PostgreSQL, Zookeeper and Kafka using Docker Compose and JBoss EAP locally. 
+## Uninstall
 
-## Cleanup
+To undo the installation use the `uninstall.sh` script:
 
-To stop and clean up, stop JBoss EAP manually and then call 
+- removes JBoss EAP
+- removes Apache Kafka
+- removed PostgreSQL JDBC driver
+- removes first responder demo
 
-```shell
-./stop-all.sh
-./uninstall-eap.sh
-```
+## Start
 
-The uninstallation script simply removes the JBoss EAP folder.  
+There are start scripts to start all necessary services. All services, but Postgres are started locally. Postgres ist started in a container.   

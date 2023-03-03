@@ -2,7 +2,7 @@
 
 # --------------------------------------------------
 #
-# Script to uninstall JBoss EAP.
+# Script to start Kafka
 #
 # --------------------------------------------------
 
@@ -19,7 +19,7 @@ cd "${script_dir}"
 
 usage() {
   cat <<EOF
-Script to uninstall JBoss EAP.
+Script to start Kafka.
 
 USAGE:
     $(basename "${BASH_SOURCE[0]}") [FLAGS]
@@ -80,8 +80,7 @@ parse_params() {
 parse_params "$@"
 setup_colors
 
-EAP_74_DIR=jboss-eap-7.4
+KAFKA_VERSION=2.13-3.4.0
+KAFKA_DIR=kafka_${KAFKA_VERSION}
 
-msg "\n${CYAN}Remove${NOFORMAT} JBoss EAP 7.4"
-rm -rf ${EAP_74_DIR}
-msg "${GREEN}DONE${NOFORMAT}"
+${KAFKA_DIR}/bin/kafka-server-start.sh ${KAFKA_DIR}/config/server.properties
