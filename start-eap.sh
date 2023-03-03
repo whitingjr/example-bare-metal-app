@@ -94,5 +94,5 @@ ${EAP_74_DIR}/bin/add-user.sh -u admin -p admin --silent
 ${EAP_74_DIR}/bin/standalone.sh \
   -DKAFKA_SERVER=localhost:9092 \
   -DMAPBOX_TOKEN="${MAPBOX_TOKEN}" \
-  -b0.0.0.0 \
+  -b=0.0.0.0 \
   -c standalone-microprofile.xml
