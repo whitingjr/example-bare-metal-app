@@ -22,7 +22,7 @@ usage() {
 Script to start the simulator.
 
 USAGE:
-    $(basename "${BASH_SOURCE[0]}") [FLAGS] <mapbox-token>
+    $(basename "${BASH_SOURCE[0]}") [FLAGS]
 
 FLAGS:
     -f, --flag          Some flag

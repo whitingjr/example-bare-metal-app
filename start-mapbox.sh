@@ -2,7 +2,7 @@
 
 # --------------------------------------------------
 #
-# Script to uninstall JBoss EAP.
+# Script to start the simulator
 #
 # --------------------------------------------------
 
@@ -19,7 +19,7 @@ cd "${script_dir}"
 
 usage() {
   cat <<EOF
-Script to uninstall JBoss EAP.
+Script to start the MapBox API mock.
 
 USAGE:
     $(basename "${BASH_SOURCE[0]}") [FLAGS]
@@ -80,36 +80,7 @@ parse_params() {
 parse_params "$@"
 setup_colors
 
-EAP_74_DIR=jboss-eap-7.4
-
-KAFKA_VERSION=2.13-3.4.0
-KAFKA_DIR=kafka_${KAFKA_VERSION}
-KAFKA_TAR=kafka_${KAFKA_VERSION}.tgz
-
-POSTGRESQL_VERSION=42.2.5
-POSTGRESQL_JAR=postgresql-${POSTGRESQL_VERSION}.jar
-
 MAPBOX_NAME=frdemo-mapbox
+MAPBOX_JAR=${MAPBOX_NAME}/target/quarkus-app/quarkus-run.jar
 
-FRDEMO_NAME=first-responder-demo
-
-msg "\n${CYAN}Remove${NOFORMAT} JBoss EAP 7.4"
-rm -rf ${EAP_74_DIR}
-msg "${GREEN}DONE${NOFORMAT}"
-
-msg "\n${CYAN}Remove${NOFORMAT} Kafka ${KAFKA_VERSION}"
-rm -rf ${KAFKA_TAR}
-rm -rf ${KAFKA_DIR}
-msg "${GREEN}DONE${NOFORMAT}"
-
-msg "\n${CYAN}Remove${NOFORMAT} PostgreSQL ${POSTGRESQL_VERSION}"
-rm -rf ${POSTGRESQL_JAR}
-msg "${GREEN}DONE${NOFORMAT}"
-
-msg "\n${CYAN}Remove${NOFORMAT} MapBox API mock"
-rm -rf ${MAPBOX_NAME}
-msg "${GREEN}DONE${NOFORMAT}"
-
-msg "\n${CYAN}Remove${NOFORMAT} First Responder Demo"
-rm -rf ${FRDEMO_NAME}
-msg "${GREEN}DONE${NOFORMAT}"
+java -jar ${MAPBOX_JAR}

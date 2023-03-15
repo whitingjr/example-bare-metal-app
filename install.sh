@@ -115,8 +115,12 @@ POSTGRESQL_VERSION=42.2.5
 POSTGRESQL_JAR=postgresql-${POSTGRESQL_VERSION}.jar
 POSTGRESQL_URL=https://repo1.maven.org/maven2/org/postgresql/postgresql/${POSTGRESQL_VERSION}/${POSTGRESQL_JAR}
 
+MAPBOX_NAME=frdemo-mapbox
+MAPBOX_URL=https://github.com/hpehl/${MAPBOX_NAME}
+MAPBOX_SIMULATOR_JAR=${MAPBOX_NAME}/target/quarkus-app/quarkus-run.jar
+
 FRDEMO_NAME=first-responder-demo
-FRDEMO_URL=https://github.com/wildfly-extras/${FRDEMO_NAME}
+FRDEMO_URL=https://github.com/hpehl/${FRDEMO_NAME}
 FRDEMO_BACKEND_WAR=${FRDEMO_NAME}/backend/target/frdemo-backend.war
 FRDEMO_SIMULATOR_JAR=${FRDEMO_NAME}/simulator/target/quarkus-app/quarkus-run.jar
 
@@ -170,6 +174,24 @@ if [[ -f ${POSTGRESQL_JAR} ]]; then
 else
   wget ${POSTGRESQL_URL}
   msg "${GREEN}DONE${NOFORMAT}"
+fi
+
+msg "\n${CYAN}Clone${NOFORMAT} MapBox API Mock"
+if [[ -d ${MAPBOX_NAME} ]]; then
+  msg "${YELLOW}Skipped${NOFORMAT}"
+else
+  git clone ${MAPBOX_URL}
+  msg "${GREEN}DONE${NOFORMAT}"
+fi
+
+msg "\n${CYAN}Build${NOFORMAT} MapBox API Mock"
+if [[ -f ${MAPBOX_SIMULATOR_JAR} ]]; then
+  msg "${YELLOW}Skipped${NOFORMAT}"
+else
+  cd ${MAPBOX_NAME}
+  mvn clean package
+  msg "${GREEN}DONE${NOFORMAT}"
+  cd ..
 fi
 
 msg "\n${CYAN}Clone${NOFORMAT} First Responder Demo"
