@@ -30,4 +30,8 @@ To undo the installation use the `uninstall.sh` script:
 
 ## Start
 
-There are start scripts to start all necessary services. All services, but Postgres are started locally. Postgres ist started in a container.   
+There are start scripts to start all necessary services. All services, but Postgres are started locally. Postgres is started in a container.   
+
+## Simulator 
+
+Finally you can use `./start-simulator.sh` to start the [simulator](https://github.com/wildfly-extras/first-responder-demo/tree/main/simulator) locally. The simulator listens to http://localhost:8888 by default and exposes a [REST API](https://github.com/wildfly-extras/first-responder-demo/blob/main/simulator/src/main/java/org/cajun/navy/util/GeneratorResource.java) to generate incidents and responders. 
