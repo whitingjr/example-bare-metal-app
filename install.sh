@@ -111,7 +111,7 @@ KAFKA_DIR=kafka_${KAFKA_VERSION}
 KAFKA_TAR=kafka_${KAFKA_VERSION}.tgz
 KAFKA_URL=https://dlcdn.apache.org/kafka/3.4.0/${KAFKA_TAR}
 
-POSTGRESQL_VERSION=42.2.5
+POSTGRESQL_VERSION=42.5.0
 POSTGRESQL_JAR=postgresql-${POSTGRESQL_VERSION}.jar
 POSTGRESQL_URL=https://repo1.maven.org/maven2/org/postgresql/postgresql/${POSTGRESQL_VERSION}/${POSTGRESQL_JAR}
 
