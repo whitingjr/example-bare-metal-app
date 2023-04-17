@@ -4,7 +4,7 @@ batch
 /extension=org.wildfly.extension.microprofile.reactive-streams-operators-smallrye:add
 /subsystem=microprofile-reactive-streams-operators-smallrye:add
 /subsystem=microprofile-reactive-messaging-smallrye:add
-module add --name=org.postgres --resources=postgresql-42.2.5.jar --dependencies=javax.api,javax.transaction.api
+module add --name=org.postgres --resources=postgresql-42.5.0.jar --dependencies=javax.api,javax.transaction.api
 /subsystem=datasources/jdbc-driver=postgres:add(driver-name="postgres",driver-module-name="org.postgres",driver-class-name=org.postgresql.Driver)
 data-source add --jndi-name=java:/FRDemoDS --name=FRDemoDS --connection-url=jdbc:postgresql://localhost/frdemo --driver-name=postgres --user-name=frdemo --password=frdemo
 deploy -f first-responder-demo/backend/target/frdemo-backend.war
