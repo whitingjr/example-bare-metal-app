@@ -89,13 +89,9 @@ parse_params "$@"
 setup_colors
 
 EAP_74_DIR=jboss-eap-7.4
-KAFKA_URL=localhost:9092
-MAPBOX_URL=http://localhost:9123
 
 ${EAP_74_DIR}/bin/add-user.sh -u admin -p admin --silent
 ${EAP_74_DIR}/bin/standalone.sh \
-  -DKAFKA_SERVER=${KAFKA_URL} \
   -DMAPBOX_TOKEN="${MAPBOX_TOKEN}" \
-  -DMAPBOX_BASE_URL=${MAPBOX_URL} \
   -b=0.0.0.0 \
   -c standalone-microprofile.xml

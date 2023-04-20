@@ -9,4 +9,6 @@ module add --name=org.postgres --resources=postgresql-42.5.0.jar --dependencies=
 data-source add --jndi-name=java:/FRDemoDS --name=FRDemoDS --connection-url=jdbc:postgresql://localhost/frdemo --driver-name=postgres --user-name=frdemo --password=frdemo
 deploy -f first-responder-demo/backend/target/frdemo-backend.war
 /subsystem=undertow/server=default-server/host=default-host:write-attribute(name=default-web-module, value=frdemo-backend.war)
+/system-property=KAFKA_SERVER:add(value=localhost:9092)
+/system-property=MAPBOX_BASE_URL:add(value=http://localhost:9123)
 run-batch
